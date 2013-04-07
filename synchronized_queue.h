@@ -6,7 +6,7 @@
 #include <deque>
 
 /*! \brief A thread-safe blocking queue wrapper based on std::deque. */
-template<typename T>
+template <typename T>
 class SynchronizedQueue {
 public:
   explicit SynchronizedQueue(size_t max_size) : MAX_SIZE(max_size) { }
@@ -27,10 +27,10 @@ public:
   size_t size() const;
 
 private:
+  const size_t MAX_SIZE;
+
   std::deque<T> m_queue;
   mutable boost::mutex m_mutex;
-
-  const size_t MAX_SIZE;
 
   boost::condition_variable m_cv_not_full;
   boost::condition_variable m_cv_not_empty;
@@ -65,7 +65,7 @@ void SynchronizedQueue<T>::push(const T & t) {
   m_cv_not_empty.notify_one();
 }
 
-template<typename T>
+template <typename T>
 size_t SynchronizedQueue<T>::size() const {
   boost::mutex::scoped_lock lock(m_mutex);
   return m_queue.size();
