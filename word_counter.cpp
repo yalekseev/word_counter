@@ -66,7 +66,7 @@ void WordCounter::process_files() {
 
     // Read words from file updating respective counts
     std::string word;
-    std::fstream file(file_path.c_str());
+    std::ifstream file(file_path.c_str());
     for (std::istreambuf_iterator<char> it(file), end; it != end; ++it) {
       char ch = *it;
 
