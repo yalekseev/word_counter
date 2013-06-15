@@ -1,4 +1,5 @@
 #include <string>
+#include <thread>
 #include <map>
 
 #include "word_counter.h"
@@ -10,23 +11,26 @@ void print_top(const std::multimap<size_t, std::string> & top) {
 }
 
 void print_usage(const std::string & program) {
-  std::cout << program << " directory num_workers top_size" << std::endl;
+  std::cout << program << " directory top_size" << std::endl;
 }
 
 int main(int argc, char *argv[]) {
-  if (argc != 4) {
+  if (argc != 3) {
     print_usage(argv[0]);
     return 1;
   }
 
   std::string directory_name = argv[1];
 
-  size_t num_workers = std::stoul(argv[2]);
+  size_t num_workers = std::thread::hardware_concurrency();
+  if (num_workers == 0) {
+    num_workers = 1;
+  }
 
   WordCounter word_counter;
   word_counter.process_directory(directory_name, num_workers);
 
-  size_t top_size = std::stoul(argv[3]);
+  size_t top_size = std::stoul(argv[2]);
 
   std::multimap<size_t, std::string> top;
   word_counter.get_top(top, top_size);
